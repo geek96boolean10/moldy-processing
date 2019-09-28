@@ -47,6 +47,8 @@ void start()
     {
       importFile(LOAD_FILE); // loads a preexisting file
     }
+    f = new File(LOAD_FILE);
+    println("Home file: " + f.getAbsolutePath());
   } 
   else
   {
