@@ -35,6 +35,7 @@ void start()
 {
   if (LOAD)
   {
+    println("Load enabled!");
     File f = new File(LOAD_FILE);
     if(!f.exists())
     {
