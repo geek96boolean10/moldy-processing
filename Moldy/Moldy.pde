@@ -17,8 +17,12 @@ boolean ALLOW_GREEN = true;             // use green to indicate energy, not jus
 boolean LOAD = true;                    // determines whether to start this from a loaded file; if true, file will also be saved to the loaded location. if not found, starts a new file with this name.
 String LOAD_FILE = "moldy01.mold";      // if LOAD is true, loads this file at startup instead of starting anew. resetting will reload the file.
 
-boolean HEADLESS = false;               // headless-mode disables rendering altogether; useful for running at max speed. cannot be toggled.
-String HEADLESS_ARGS = "10000,false,autorun";   // arguments that describe how the mode runs. { [int] RunsBetweenSaves , [bool] IncrementSaveFile , [str] BaseFileName }
+boolean HEADLESS = true;               // headless-mode disables rendering altogether; useful for running at max speed. cannot be toggled.
+                                        // arguments that describe how the mode runs.
+int HEADLESS_RBS = 10000;               // RunsBetweenSaves 
+boolean HEADLESS_ISF = false;           // IncrementSaveFile (if false, overwrites) 
+String HEADLESS_BFN = "autosave";       // BaseFileName <name>.mold or <name>(auto increment).mold
+boolean HEADLESS_LFF = false;           // LoadFromFile (can load any file, but if ISF then adds an incremented number afterwards.)
 
 Cell ORIGIN;
 
@@ -29,10 +33,30 @@ void setup()
 {
   size(800, 600, P2D);
   frameRate(FPS);
+  if (HEADLESS)
+  {
+    noLoop();
+  }
+  else
+  {
+    loop();
+  }
 }
 
 void start()
 {
+  if (HEADLESS)
+  {
+    if (HEADLESS_LFF && !HEADLESS_ISF)
+    {
+      LOAD = true;
+      LOAD_FILE = HEADLESS_BFN + ".mold";
+    }
+    else if (!HEADLESS_LFF)
+    {
+      LOAD = false;
+    }
+  }
   if (LOAD)
   {
     println("Load enabled!");
@@ -53,6 +77,28 @@ void start()
   else
   {
     resetORIGIN();
+  }
+  if (HEADLESS)
+  {
+    // ready to begin. no draw loop, so everything happens here.
+    FRAME_SKIP = 1; // don't skip, not necessary.
+    long increment = 0;
+    boolean crashed = false;
+    while (!crashed)
+    {
+      for (int i = 0; i < HEADLESS_RBS; i++)
+      {
+        try {execute(i);} catch (Exception ex)
+        {// if something bad happens, dump the data
+          timeStamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(Calendar.getInstance().getTime());
+          exportFile("crashdump-" + HEADLESS_BFN + "-" + timeStamp + ".mold");
+          println("CRASHED! " + timeStamp); 
+          crashed = true;
+        }
+      }
+      String fname = HEADLESS_ISF ? HEADLESS_BFN + str(increment) : HEADLESS_BFN + ".mold";
+      if (!crashed) { exportFile(fname); increment++; }
+    }
   }
 }
 
@@ -114,7 +160,7 @@ void runBatch()
   {
     try
     {
-      execute();
+      execute(-1);
     }
     catch (Exception e)
     {
@@ -130,7 +176,7 @@ void runBatch()
   }
 }
 
-void execute() throws Exception
+void execute(int HEADLESS_CurrentRun) throws Exception
 {
   //println(Cells.size());
   //
@@ -177,10 +223,10 @@ void execute() throws Exception
   
   Q.clear();
   //println("max energy: " + KnownMax);
-  if (++loop >= FPS * FRAME_SKIP)
+  if (++loop >= (HEADLESS ? 0.1 * HEADLESS_RBS : FPS * FRAME_SKIP))
   { 
     loop = 0;
-    println("Global Energy: " + GlobalEnergy + ";  Density: " + GlobalEnergy / Cells.size());
+    println((HEADLESS ? HEADLESS_CurrentRun + " " : "") + "Global Energy: " + GlobalEnergy + ";  Density: " + GlobalEnergy / Cells.size());
   }
   GlobalEnergy = 0;
 }
