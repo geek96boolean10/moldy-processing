@@ -10,7 +10,7 @@ If you would like to try this out, please do! Note that a beefier machine may be
 
 Here are some recommended tweaks and their resultant behaviors:
 
-- ###Moldy.pde
+- ***Moldy.pde***
 	- `LIVING_TOL`: The higher this is, the fewer the cells lingering around at the edges.
 	- `LOAD`: Indicates that the sketch should load a file into the field rather than start anew. This is automatically true if `HEADLESS_LFF` is true.
 	- `LOAD_FILE`: The file from which to read. Automatically populated with information from `HEADLESS_BFN` if `_LFF` is true.
@@ -20,7 +20,7 @@ Here are some recommended tweaks and their resultant behaviors:
 		- `_BFN`: Determines the **B**ase **F**ile **N**ame to use while saving. Increments, if any, are appended to this name. An extension of *.mold* is automatically/always added.
 		- `_LFF`: Indicates if the sketch should start by **L**oading **F**rom **F**ile. This will not look for the 'last known increment' of the provided file name; if you expect it to load from a incremented file, you must specify the entire filename less the extension (i.e. autosave26). If you then proceed with `ISF` enabled, a new number will be appended (i.e. autosave260, autosave261, ..., autosave2610, etc).
 
-- ###Cell.pde
+- ***Cell.pde***
 	- `MAX_EXCITE`: Determines attenuation/amplification of a cell's incoming energy from neighbors.
 	- `OFF_EXCITE`: Sets a minimum gain / maximum loss. If zero, cells may spawn that will die straight away. If greater than one, growth explosions are imminent and unstoppable.
 	- `MAX_INSULA`: Determines how conservative a cell is with giving away its energy. Higher values reduce the energy output per cell.
