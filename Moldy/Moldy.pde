@@ -22,7 +22,7 @@ boolean HEADLESS = true;               // headless-mode disables rendering altog
 int HEADLESS_RBS = 10000;               // RunsBetweenSaves 
 boolean HEADLESS_ISF = false;           // IncrementSaveFile (if false, overwrites) 
 String HEADLESS_BFN = "autosave";       // BaseFileName <name>.mold or <name>(auto increment).mold
-boolean HEADLESS_LFF = false;           // LoadFromFile (can load any file, but if ISF then adds an incremented number afterwards.)
+boolean HEADLESS_LFF = true;           // LoadFromFile (can load any file, but if ISF then adds an incremented number afterwards.)
 
 Cell ORIGIN;
 
